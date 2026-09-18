@@ -1,8 +1,6 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+session_start();
 
 require_once "db.php";
 
@@ -13,21 +11,28 @@ $auteurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $titre = $_POST["titre"];
-    $date_publication = $_POST["date_publication"];
-    $id_auteur = $_POST["id_auteur"];
 
-    $sql = "INSERT INTO book (title, publication_date, author_id)
-            VALUES (?, ?, ?)";
-    
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        $titre,
-        $date_publication,
-        $id_auteur
-    ]);
+    if (empty(trim($titre))) {
+        echo "Le titre du livre est obligatoire.";
+    } else {
+        $date_publication= $_POST["date_publication"];
+        $id_auteur = $_POST["id_auteur"];
+        $sql = "INSERT INTO book (title, publication_date, author_id)
+                VALUES (?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            $titre,
+            $date_publication,
+            $id_auteur
+        ]);
 
-    echo "Livre ajouté avec succès !";
+        $_SESSION['message'] = "Livre ajouter avec succès !";
+
+        header('Location: list.php');
+        exit;
+    }
 }
+
 
 ?>
 
@@ -39,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </head>
 
     <body>
+    <?php require_once 'nav.php'; ?>
 
         <h1>Ajouter un livre</h1>
 
@@ -49,7 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 type="text"
                 id="titre"
                 name="titre"
-                required
             >
 
             <br><br>
@@ -59,7 +64,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 type="date"
                 id="date_publication"
                 name="date_publication"
-                required
             >
 
             <br><br>

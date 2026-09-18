@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once 'db.php';
 
 $id = $_GET['id'];
@@ -14,6 +16,10 @@ $book = $stmt->fetch(PDO::FETCH_ASSOC);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $title = $_POST['title'];
+
+    if (empty(trim($title))) {
+        echo "Le titre de livre est obligatoire.";
+    } else {
     $publication_date = $_POST['publication_date'];
     $sql = "UPDATE book
             SET title = :title,
@@ -26,8 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'id' => $id
     ]);
 
+    $_SESSION['message'] = "Livre modifier avec succès !";
+
     header('Location: list.php');
     exit;
+    }
 }
 
 ?>
@@ -40,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
+    <?php require_once 'nav.php'; ?>
     <h1>Modifier le livre</h1>
     <form method="POST">
         <label>Titre :</label>

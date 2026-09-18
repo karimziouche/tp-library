@@ -17,6 +17,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
+<?php require_once 'nav.php' ; ?>
+
 <H1>Ajouter un auteur</H1>
 
 <form method="POST">

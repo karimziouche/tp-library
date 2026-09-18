@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once 'db.php';
 
 $sql = "SELECT book.id, book.title, book.publication_date, author.lastname, author.firstname
@@ -23,6 +25,19 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </style>
     </head>
     <body>
+    <?php require_once 'nav.php'; ?>
+    <?php
+    if (isset($_SESSION['message'])) {
+        echo $_SESSION['message'];
+        unset($_SESSION['message']);
+    }
+    ?>
+    <form method="GET">
+        <label>Titre :</label>
+        <input type="text" name="search">
+        <button type="submit">Rechercher</button>
+    </form>
+    <br>
         <table>
             <tr>
                 <th>Id </th>
