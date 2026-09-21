@@ -4,10 +4,16 @@ session_start();
 
 require_once 'db.php';
 
+$search = $_GET['search'] ?? '';
+
 $sql = "SELECT book.id, book.title, book.publication_date, author.lastname, author.firstname
         FROM book
-        JOIN author ON book.author_id = author.id";
-$stmt = $pdo->query($sql);
+        JOIN author ON book.author_id = author.id
+        WHERE book.title LIKE :search";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    'search' => '%' . $search . '%'
+]);
 $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
@@ -17,15 +23,11 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <head>
         <meta charset="UTF-8">
         <title>Liste des livres</title>
-        <style>
-            table, th, td {
-                border: 1px solid black;
-                border-collapse: collapse;
-            }
-        </style>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
     <?php require_once 'nav.php'; ?>
+    <h1>Liste des livres</h1>
     <?php
     if (isset($_SESSION['message'])) {
         echo $_SESSION['message'];

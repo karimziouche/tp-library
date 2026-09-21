@@ -17,22 +17,24 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
-<?php require_once 'nav.php' ; ?>
-
-<H1>Ajouter un auteur</H1>
-
-<form method="POST">
-
-<label>Nom :</label>
-<input type="text" name="lastname">
-
-<br><br>
-
-<label>Prénom :</label>
-<input type="text" name="firstname">
-
-<br><br>
-
-<button type="submit">Ajouter l'auteur</button>
-
-</form>
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Ajouter un auteur</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+    <?php require_once 'nav.php' ; ?>
+    <h1>Ajouter un auteur</h1>
+        <form method="POST">
+            <label>Nom :</label>
+            <input type="text" name="lastname">
+            <br><br>
+            <label>Prénom :</label>
+            <input type="text" name="firstname">
+            <br><br>
+            <button type="submit">Ajouter l'auteur</button>
+        </form>
+    </body>
+</html>

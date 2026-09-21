@@ -1,0 +1,29 @@
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+nav {
+    background-color: #8db0f4;
+    padding: 15px;
+}
+
+nav ul {
+    display: flex;
+    gap: 15px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    text-decoration: white;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+
+nav a:hover {
+    background-color: white;
+    color: #8db0f4
+}

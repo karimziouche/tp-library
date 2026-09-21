@@ -4,7 +4,9 @@ session_start();
 
 require_once "db.php";
 
-$sql = "SELECT * FROM author";
+$sql = "SELECT MIN(id) AS id, lastname, firstname
+        FROM author
+        GROUP BY lastname, firstname";
 $stmt = $pdo->query($sql);
 $auteurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -41,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <head>
         <meta charset="UTF-8">
         <title>Ajouter un livre</title>
+        <link rel="stylesheet" href="style.css">
     </head>
 
     <body>
