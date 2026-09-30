@@ -3,18 +3,17 @@
 session_start();
 
 require_once 'db.php';
+require_once 'Book.php';
+require_once 'Author.php';
 
 $search = $_GET['search'] ?? '';
 
-$sql = "SELECT book.id, book.title, book.publication_date, author.lastname, author.firstname
+$sql = "SELECT book.id, book.title, book.publication_date, book.author_id
         FROM book
-        JOIN author ON book.author_id = author.id
         WHERE book.title LIKE :search";
 $stmt = $pdo->prepare($sql);
-$stmt->execute([
-    'search' => '%' . $search . '%'
-]);
-$books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt->bindValue(':search', '%' . $search . '%');
+$stmt->execute();
 
 ?>
 
@@ -48,15 +47,24 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Date de publication</th>
                 <th>Action</th>
             </tr>
-        <?php foreach($books as $book) { ?>
+        <?php while ($book = $stmt->fetchObject('Book')) { ?>
+        <?php
+        $sqlAuthor = "SELECT id, firstname, lastname FROM author WHERE id = ?";
+        $stmtAuthor = $pdo->prepare($sqlAuthor);
+        $stmtAuthor->bindValue(1, $book->getAuthor_id(), PDO::PARAM_INT);
+        $stmtAuthor->execute();
+
+        $author = $stmtAuthor->fetchObject('Author');
+        $book->setAuthor($author);
+        ?>
         <tr>
-            <td><?php echo $book["id"]?></td>
-            <td><?php echo $book["title"]?></td>
-            <td><?php echo $book["firstname"] . " " . $book["lastname"]; ?></td>
-            <td><?php echo $book["publication_date"]?></td>
+            <td><?php echo $book->getId()?></td>
+            <td><?php echo $book->getTitle()?></td>
+            <td><?php echo $book->getAuthor()->getFirstName() . " " . $book->getAuthor()->getLastName(); ?></td>
+            <td><?php echo $book->getPublication_date()?></td>
             <td>
-                <a href="edit-book.php?id=<?php echo $book["id"]; ?>"> Modifier </a>
-                <a href="delete-book.php?id=<?php echo $book["id"]; ?>"> Supprimer </a>
+                <a href="edit-book.php?id=<?php echo $book->getId(); ?>"> Modifier </a>
+                <a href="delete-book.php?id=<?php echo $book->getId(); ?>"> Supprimer </a>
             </td>
         </tr>
         <?php } ?>

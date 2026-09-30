@@ -3,15 +3,15 @@
 session_start();
 
 require_once 'db.php';
+require_once 'Book.php';
 
 $id = $_GET['id'];
 
 $sql = "SELECT * FROM book WHERE id = :id";
 $stmt = $pdo->prepare($sql);
-$stmt->execute([
-    'id' => $id
-]);
-$book = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt->bindValue(':id', $id, PDO::PARAM_INT);
+$stmt->execute();
+$book = $stmt->fetchObject('Book');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -26,11 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 publication_date = :publication_date
             WHERE id = :id";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        'title' => $title,
-        'publication_date' => $publication_date,
-        'id' => $id
-    ]);
+    $stmt->bindValue(':title', $title);
+    $stmt->bindValue(':publication_date', $publication_date);
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
 
     $_SESSION['message'] = "Livre modifier avec succès !";
 
@@ -56,14 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label>Titre :</label>
         <input type="text"
                name="title"
-               value="<?= $book['title'] ?>">
+               value="<?= $book->getTitle() ?>">
 
         <br><br>
         
         <label>Date de publication :</label>
         <input type="date"
                name="publication_date"
-               value="<?= $book['publication_date'] ?>">
+               value="<?= $book->getPublication_date() ?>">
 
         <br><br>
 

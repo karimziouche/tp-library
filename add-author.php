@@ -1,16 +1,22 @@
 <?php
 
 require_once 'db.php';
+require_once 'Author.php';
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $lastname = $_POST['lastname'];
     $firstname = $_POST['firstname'];
+    $author = new Author();
+    $author->setFirstName($firstname);
+    $author->setLastName($lastname);
 
     $sql = "INSERT INTO author (lastname, firstname) VALUES (?, ?)";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$lastname, $firstname]);
+    $stmt->bindValue(1, $author->getLastName());
+    $stmt->bindValue(2, $author->getFirstName());
+    $stmt->execute();
 
     echo "Auteur ajouté avec succès !";
 }
